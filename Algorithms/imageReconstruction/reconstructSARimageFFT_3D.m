@@ -166,22 +166,22 @@ end
 %-------------------------------------------------------------------------%
 if is3DImaging
     [ySizeData,xSizeData,~] = size(sarDataFFT);
-    sarImageIfft = zeros(ySizeData,xSizeData,length(zRangeT_mm));
+    sarImageIFFT = zeros(ySizeData,xSizeData,length(zRangeT_mm));
     for n = 1:length(zRangeT_mm)
         phaseFactor = exp(-1i*zRangeT_mm(n)*kZ);
         phaseFactor((kX.^2 + kY.^2) > (2*k).^2) = 0;
         
-        sarDataFFT = sarDataFFT .* phaseFactor;
+        sarDataFFT_Corrected = sarDataFFT .* phaseFactor;
         
         if isAmplitudeFactor
             amplitudeFactor = kZ;
             amplitudeFactor((kX.^2 + kY.^2) > (2*k).^2) = 0;
-            sarDataFFT = sarDataFFT .* amplitudeFactor;
+            sarDataFFT_Corrected = sarDataFFT_Corrected .* amplitudeFactor;
         end
         
-        sarImageIfft(:,:,n) = sum(sarDataFFT,3);
+        sarImageIFFT(:,:,n) = sum(sarDataFFT_Corrected,3);
     end
-    sarImage = ifft2(sarImageIfft);
+    sarImage = ifft2(sarImageIFFT);
 end
 
 
